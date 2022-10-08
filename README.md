@@ -23,3 +23,26 @@ Then finally build in either `Debug` or `Release` mode:
 * `mkdir build && cd build`
 * `cmake -DCMAKE_BUILD_TYPE=Debug ..`
 * `make`
+
+# Building the Database
+Before you can get started with development (or usage) you will need to build the database.
+
+Fortunately, the makefile will take care of all of the work for you, you just need to create one superuser named `fwmsadmin` with a pssword.
+
+```text
+sudo -i -u postgres
+
+create role fwmsadmin superuser login password 'your_password';
+
+quit;
+```
+
+Once you have the admin role set, use the `PGPASSWORD` envinroment variable and run the makefile from the root directory.
+
+```text
+export PGPASSWORD=your_password
+
+make newdb
+```
+
+This will execute all necessary SQL to construct the database for the first time. You wouldn't need to do this again unless you add additional tables or switch computers.
