@@ -32,6 +32,8 @@ Fortunately, the makefile will take care of all of the work for you, you just ne
 ```text
 sudo -i -u postgres
 
+psql
+
 create role fwmsadmin superuser login password 'your_password';
 
 quit;
