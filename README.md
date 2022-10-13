@@ -27,7 +27,9 @@ Then finally build in either `Debug` or `Release` mode:
 # Building the Database
 Before you can get started with development (or usage) you will need to build the database.
 
-Fortunately, the makefile will take care of all of the work for you, you just need to create one superuser named `fwmsadmin` with a pssword.
+Fortunately, the makefile will take care of all of the work for you, just create one superuser named `fwmsadmin` with a pssword and a regular user 'fwmsuser'.
+
+You will also have to change the authentication method from "peer" to "md5".
 
 ```text
 sudo -i -u postgres
@@ -36,10 +38,18 @@ psql
 
 create role fwmsadmin superuser login password 'your_password';
 
+create role fwmsuser; /* this will be the account used by the client for SELECT/INSERTs */
+
+show hba_file; /* this will give you a directory to use in next step */
+
 quit;
 ```
 
-Once you have the admin role set, use the `PGPASSWORD` envinroment variable and run the makefile from the root directory.
+After you create the roles above and obtain the hba file path, open it in a text editor (with sudo) and scroll down to the bottom. You'll need to change all "peer" connections to  "md5" **EXCEPT THE "postgres" ROLE, LEAVE THAT AS PEER**.
+
+Next, use `sudo service postgresql restart` to restart the postgres server and reload the config.
+
+Finally, set the `PGPASSWORD` envinroment variable to the password you set for `fwmsadmin` and run the makefile from the root directory.
 
 ```text
 export PGPASSWORD=your_password
@@ -47,4 +57,4 @@ export PGPASSWORD=your_password
 make newdb
 ```
 
-This will execute all necessary SQL to construct the database for the first time. You wouldn't need to do this again unless you add additional tables or switch computers.
+This will execute all necessary SQL to construct the database for the first time. You wouldn't need to do this again unless you add/modify tables or switch computers.

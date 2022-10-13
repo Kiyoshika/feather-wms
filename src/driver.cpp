@@ -1,5 +1,5 @@
 #include <iostream>
-#include "PickableLocation.hpp"
+#include "fwmscore.hpp"
 
 using wms::locations::PickableLocation;
 
