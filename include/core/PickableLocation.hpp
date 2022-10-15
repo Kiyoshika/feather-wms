@@ -21,13 +21,13 @@ class PickableLocation : protected wms::internal::sql::QueryManager
 			const uint16_t aisle,
 			const uint16_t bay,
 			const uint16_t level,
-			const bool is_active);
+			const bool is_active) noexcept(false);
 
 	// convert location to a string format XX-XX-XX (aisle-bay-level)
-	std::string to_string() const;
+	std::string to_string() const noexcept(true);
 
 	// insert location into "locations" table within database
-	void commit_insert();
+	void commit_insert() noexcept(false);
 
 
 	std::string warehouse;
@@ -40,7 +40,7 @@ class PickableLocation : protected wms::internal::sql::QueryManager
 
 	private:
 
-	bool check_location_exists();
+	bool check_location_exists() noexcept(true);
 }; // class Location
 }; // namespace entities
 }; // namespace wms

@@ -7,7 +7,7 @@ wms::locations::PickableLocation::PickableLocation(
 		const uint16_t aisle,
 		const uint16_t bay,
 		const uint16_t level,
-		const bool is_active)
+		const bool is_active) noexcept(false)
 {
 	if (warehouse.length() == 0)
 		throw std::runtime_error("ERR: 'warehouse' must not be non-empty.");
@@ -31,7 +31,7 @@ wms::locations::PickableLocation::PickableLocation(
 		(256 * 256 * this->aisle); 
 }
 
-std::string wms::locations::PickableLocation::to_string() const
+std::string wms::locations::PickableLocation::to_string() const noexcept(true)
 {
 	std::string location_string = "";
 	location_string += std::to_string(this->aisle) + "-";
@@ -41,7 +41,7 @@ std::string wms::locations::PickableLocation::to_string() const
 	return location_string;
 }
 
-void wms::locations::PickableLocation::commit_insert()
+void wms::locations::PickableLocation::commit_insert() noexcept(false)
 {
 	// verify location doesn't exist by searching pick flow int which is a unique
 	// identifier for a location
@@ -49,6 +49,8 @@ void wms::locations::PickableLocation::commit_insert()
 		throw std::runtime_error("ERR: Location already exists.");
 	
 	pqxx::connection* conn = this->open_connection();
+	if (conn == nullptr)
+		throw std::runtime_error("ERR: Couldn't connect to PostgreSQL server.");
 
 	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/locations/insert_new_location.sql");
 	
