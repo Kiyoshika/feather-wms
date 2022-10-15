@@ -31,14 +31,16 @@ Fortunately, the makefile will take care of all of the work for you, just create
 
 You will also have to change the authentication method from "peer" to "md5".
 
+**NOTE**: Currently the client password is hardcoded as "sample" in `QueryManager.hpp` - ideally this should be read from a file but for now this is fine.
+
 ```text
 sudo -i -u postgres
 
 psql
 
-create role fwmsadmin superuser login password 'your_password';
+create role fwmsadmin superuser login password 'admin_password';
 
-create role fwmsuser; /* this will be the account used by the client for SELECT/INSERTs */
+create role fwmsuser login password 'sample'; /* this will be the account used by the client for SELECT/INSERTs */
 
 show hba_file; /* this will give you a directory to use in next step */
 
@@ -52,7 +54,7 @@ Next, use `sudo service postgresql restart` to restart the postgres server and r
 Finally, set the `PGPASSWORD` envinroment variable to the password you set for `fwmsadmin` and run the makefile from the root directory.
 
 ```text
-export PGPASSWORD=your_password
+export PGPASSWORD=admin_password
 
 make newdb
 ```

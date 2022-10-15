@@ -7,6 +7,8 @@
 #include <string>
 #include <stdexcept>
 #include <utility>
+#include <tuple>
+#include <functional>
 
 namespace wms
 {
@@ -19,20 +21,19 @@ class BaseMenu
 	BaseMenu(const std::string& title);
 	BaseMenu(
 		const std::string& title,
-		const std::vector<std::pair<uint16_t, std::string>>& options);
+		const std::vector<std::tuple<uint16_t, std::string, std::function<void()>>>& options);
 	void display(std::string msg = "") const;
-	uint16_t display_and_listen(std::string msg = "") const;
+	void display_and_listen(std::string msg = "") const;
 	void set_title(const std::string& title);
-	void add_option(const std::pair<uint16_t, std::string>& option);
-	void add_options(const std::vector<std::pair<uint16_t, std::string>>& options);
+	void add_option(const std::tuple<uint16_t, std::string, std::function<void()>>& option);
+	void add_options(const std::vector<std::tuple<uint16_t, std::string, std::function<void()>>>& options);
 
-	private:
+	protected:
 	void clear_screen() const;
 	void display_title() const;
-	uint16_t listen_for_input() const;
-
+	void listen_for_input() const;
 	std::string title;
-	std::vector<std::pair<uint16_t, std::string>> options;
+	std::vector<std::tuple<uint16_t, std::string, std::function<void()>>> options;
 }; // class BaseMenu
 }; // namespace menu
 }; // namespace wms

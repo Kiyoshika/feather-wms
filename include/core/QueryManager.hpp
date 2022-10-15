@@ -17,7 +17,7 @@ class QueryManager
         pqxx::connection* open_connection();
         void close_connection(pqxx::connection*& conn);
 
-        const std::string connection_string = "postgresql://fwmsadmin@localhost:5432/fwmsprod";
+        const std::string connection_string = "host=localhost dbname=fwmsprod user=fwmsuser password=sample";
 }; // class QueryManager
 }; // namespace sql
 }; // namespace internal

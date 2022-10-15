@@ -13,7 +13,7 @@ wms::menu::BaseMenu::BaseMenu(const std::string& title)
 
 wms::menu::BaseMenu::BaseMenu(
 	const std::string& title,
-	const std::vector<std::pair<uint16_t, std::string>>& options)
+	const std::vector<std::tuple<uint16_t, std::string, std::function<void()>>>& options)
 	: title{title}, options{options}
 {
 	/* nothing */
@@ -35,18 +35,18 @@ void wms::menu::BaseMenu::set_title(const std::string& title)
 	this->title = title;
 }
 
-void wms::menu::BaseMenu::add_option(const std::pair<uint16_t, std::string>& option)
+void wms::menu::BaseMenu::add_option(const std::tuple<uint16_t, std::string, std::function<void()>>& option)
 {
 	this->options.push_back(option);
 }
 
-void wms::menu::BaseMenu::add_options(const std::vector<std::pair<uint16_t, std::string>>& options)
+void wms::menu::BaseMenu::add_options(const std::vector<std::tuple<uint16_t, std::string, std::function<void()>>>& options)
 {
-	for (const std::pair<uint16_t, std::string>& option : options)
+	for (const std::tuple<uint16_t, std::string, std::function<void()>>& option : options)
 		this->options.push_back(option);
 }
 
-uint16_t wms::menu::BaseMenu::listen_for_input() const
+void wms::menu::BaseMenu::listen_for_input() const
 {
 	if (this->options.size() == 0)
 		throw std::runtime_error("listen_for_input: 'allowed_options' must have at least one element.");
@@ -56,13 +56,11 @@ uint16_t wms::menu::BaseMenu::listen_for_input() const
 	{
 		uint16_t user_input;
 		std::cin >> user_input;
-		for (const auto& [idx, option] : this->options)
+		for (const auto& [idx, option, callback] : this->options)
 			if (user_input == idx)
-				return idx;
+				return callback();
 		this->display("ERR: Invalid Input"); // refresh screen
 	}
-	
-	return 0; // technically unreachable but need to satisfy compiler
 }
 
 void wms::menu::BaseMenu::display(std::string msg) const
@@ -70,7 +68,7 @@ void wms::menu::BaseMenu::display(std::string msg) const
 	this->clear_screen();
 	this->display_title();
 
-	for (const auto& [idx, option] : this->options)
+	for (const auto& [idx, option, callback] : this->options)
 		std::cout << std::to_string(idx) + ") " + option << std::endl;
 
 	if (msg.length() > 0)
@@ -79,8 +77,8 @@ void wms::menu::BaseMenu::display(std::string msg) const
 	std::cout << "\n>> "; 
 }
 
-uint16_t wms::menu::BaseMenu::display_and_listen(std::string msg) const
+void wms::menu::BaseMenu::display_and_listen(std::string msg) const
 {
 	this->display(msg);
-	return this->listen_for_input();
+	this->listen_for_input();
 }
