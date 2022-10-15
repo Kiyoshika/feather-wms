@@ -7,8 +7,21 @@ using wms::menu::AdminMenu;
 int main()
 {
 	AdminMenu admin_menu;
-	uint16_t option = admin_menu.display_and_listen();
-	std::cout << "You entered option: " << option << "\n";
+	std::string err_msg = "";
+
+	while (true)
+	{
+		try
+		{
+			admin_menu.display_and_listen(err_msg);
+			err_msg = "";
+		}
+		catch (const std::exception& e)
+		{
+			err_msg = e.what();
+		}
+
+	}
 
 	return 0;
 }

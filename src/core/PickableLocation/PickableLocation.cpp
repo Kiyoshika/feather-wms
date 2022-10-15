@@ -48,30 +48,24 @@ void wms::locations::PickableLocation::commit_insert()
 	if (this->check_location_exists())
 		throw std::runtime_error("ERR: Location already exists.");
 	
-	try
-    {
-        pqxx::connection* conn = this->open_connection();
-    
-        std::string sqlfile_str = wms::util::read_sql_from_file("../sql/locations/insert_new_location.sql");
-        
-		wms::util::replace_substring(sqlfile_str, "{warehouse}", "'" + this->warehouse + "'");
-		wms::util::replace_substring(sqlfile_str, "{name}", "'" + this->to_string() + "'");
-		wms::util::replace_substring(sqlfile_str, "{aisle}", std::to_string(this->aisle));
-		wms::util::replace_substring(sqlfile_str, "{bay}", std::to_string(this->bay));
-		wms::util::replace_substring(sqlfile_str, "{level}", std::to_string(this->level));
-        wms::util::replace_substring(sqlfile_str, "{picking_flow_int}", std::to_string(this->picking_flow_int));
-		wms::util::replace_substring(sqlfile_str, "{is_pickable}", "true");
-		std::string is_active_str = this->is_active ? "true" : "false";
-		wms::util::replace_substring(sqlfile_str, "{is_active}", is_active_str);
+	pqxx::connection* conn = this->open_connection();
 
-		conn->prepare("insert_location", sqlfile_str);
-        pqxx::work work(*conn);
-        pqxx::result r = work.exec_prepared("insert_location");
-        work.commit();
-        
-        this->close_connection(conn);
-    } catch (const std::exception& e)
-    {
-        std::cerr << e.what() << std::endl;
-    }
+	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/locations/insert_new_location.sql");
+	
+	wms::util::replace_substring(sqlfile_str, "{warehouse}", "'" + this->warehouse + "'");
+	wms::util::replace_substring(sqlfile_str, "{name}", "'" + this->to_string() + "'");
+	wms::util::replace_substring(sqlfile_str, "{aisle}", std::to_string(this->aisle));
+	wms::util::replace_substring(sqlfile_str, "{bay}", std::to_string(this->bay));
+	wms::util::replace_substring(sqlfile_str, "{level}", std::to_string(this->level));
+	wms::util::replace_substring(sqlfile_str, "{picking_flow_int}", std::to_string(this->picking_flow_int));
+	wms::util::replace_substring(sqlfile_str, "{is_pickable}", "true");
+	std::string is_active_str = this->is_active ? "true" : "false";
+	wms::util::replace_substring(sqlfile_str, "{is_active}", is_active_str);
+
+	conn->prepare("insert_location", sqlfile_str);
+	pqxx::work work(*conn);
+	pqxx::result r = work.exec_prepared("insert_location");
+	work.commit();
+	
+	this->close_connection(conn);
 }
