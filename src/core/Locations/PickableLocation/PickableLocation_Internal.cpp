@@ -9,7 +9,7 @@ bool wms::locations::PickableLocation::check_location_exists() noexcept(true)
 	if (conn == nullptr)
 		return false;
 
-	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/locations/check_location_exists.sql");
+	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/locations/check_pickable_location_exists.sql");
 	wms::util::replace_substring(sqlfile_str, "{warehouse}", "'" + this->warehouse + "'");
 	wms::util::replace_substring(sqlfile_str, "{picking_flow_int}", std::to_string(this->picking_flow_int));
 

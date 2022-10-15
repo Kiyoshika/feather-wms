@@ -1,5 +1,6 @@
 #include "AddLocation.hpp"
 #include "PickableLocation.hpp"
+#include "NonPickableLocation.hpp"
 
 bool _is_valid_location_name(
 	const std::string& location_name,
@@ -97,8 +98,13 @@ wms::menu::locations::AddLocation::AddLocation()
 
 		loc.commit_insert();
 	}
-	else
+	else // non-pickable
 	{
-		// TODO: add non-pickable locations
+		wms::locations::NonPickableLocation loc(
+			"TEST1",
+			location_name,
+			is_active_b);
+
+		loc.commit_insert();
 	}
 }
