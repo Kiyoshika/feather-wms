@@ -60,3 +60,5 @@ make newdb
 ```
 
 This will execute all necessary SQL to construct the database for the first time. You wouldn't need to do this again unless you add/modify tables or switch computers.
+
+**NOTE**: If you get permission denied while running the client, try another `sudo service postgresql restart` after using `make newdb`.
