@@ -1,5 +1,6 @@
 # add all SQL files necessary for client into build folder
-configure_file(sql/locations/check_location_exists.sql sql/locations/check_location_exists.sql COPYONLY)
+configure_file(sql/locations/check_pickable_location_exists.sql sql/locations/check_pickable_location_exists.sql COPYONLY)
+configure_file(sql/locations/check_nonpickable_location_exists.sql sql/locations/check_nonpickable_location_exists.sql COPYONLY)
 configure_file(sql/locations/insert_new_location.sql sql/locations/insert_new_location.sql COPYONLY)
 
 add_library(wmsmenu 
