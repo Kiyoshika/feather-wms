@@ -14,8 +14,8 @@ namespace sql
 class QueryManager
 {
     protected:
-        pqxx::connection* open_connection();
-        void close_connection(pqxx::connection*& conn);
+        pqxx::connection* open_connection() const noexcept(true);
+        void close_connection(pqxx::connection*& conn) const noexcept(true);
 
         const std::string connection_string = "host=localhost dbname=fwmsprod user=fwmsuser password=sample";
 }; // class QueryManager

@@ -1,6 +1,6 @@
 #include "QueryManager.hpp"
 
-pqxx::connection* wms::internal::sql::QueryManager::open_connection()
+pqxx::connection* wms::internal::sql::QueryManager::open_connection() const noexcept(true)
 {
     pqxx::connection* conn = nullptr;
     try
@@ -9,16 +9,19 @@ pqxx::connection* wms::internal::sql::QueryManager::open_connection()
     }
     catch (const std::exception& e)
     {
-        delete conn; // should be no-op, but doing it anyways
+        //delete conn; // should be no-op, but doing it anyways
 		std::cerr << e.what() << std::endl;
     }
 
     return conn;
 }
 
-void wms::internal::sql::QueryManager::close_connection(pqxx::connection*& conn)
+void wms::internal::sql::QueryManager::close_connection(pqxx::connection*& conn) const noexcept(true)
 {
-    conn->close();
-    delete conn;
-    conn = nullptr;
+	if (conn)
+	{
+		conn->close();
+		delete conn;
+		conn = nullptr;
+	}
 }
