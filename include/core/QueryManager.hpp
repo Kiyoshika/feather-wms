@@ -19,7 +19,8 @@ class QueryManager
         void close_connection(pqxx::connection*& conn) const noexcept(true);
 		pqxx::result execute_query(
 			pqxx::connection*& conn,
-			const std::string& query_string) const noexcept(true);
+			const std::string& query_string,
+			const std::string& query_name) const noexcept(true);
 	private:
         const std::string connection_string = "host=localhost dbname=fwmsprod user=fwmsuser password=sample";
 }; // class QueryManager

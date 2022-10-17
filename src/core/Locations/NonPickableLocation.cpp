@@ -8,14 +8,11 @@ wms::locations::NonPickableLocation::NonPickableLocation(
 	const std::string& location_name,
 	const bool is_active) noexcept(false)
 {
-	if (warehouse.length() == 0)
-		throw std::runtime_error("ERR: 'warehouse' must be non-empty.");
-	if (warehouse.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") != std::string::npos)
-		throw std::runtime_error("ERR: 'warehouse' must only contain letters and/or numbers.");
-	if (location_name.length() < 5)
-		throw std::runtime_error("ERR: 'location_name' must be at least 5 characters long");
-	if (location_name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_") != std::string::npos)
-		throw std::runtime_error("ERR: 'location_name' must only contain letters, numbers, hyphens (-) or underscores (_)..");
+	if (!wms::util::is_valid_warehouse_name(warehouse))
+		throw std::runtime_error("ERR: Invalid warehouse name.");
+	
+	if (!wms::util::is_valid_location_name(location_name))
+		throw std::runtime_error("ERR: Invalid location mame.");
 
 	this->warehouse = warehouse;
 	this->location_name = location_name;
@@ -47,6 +44,6 @@ void wms::locations::NonPickableLocation::commit_insert() const noexcept(false)
 		{ "{is_active}", is_active_str }
 	});
 
-	this->execute_query(conn, sqlfile_str);
+	this->execute_query(conn, sqlfile_str, "insert_new_location_nonpickable");
 	this->close_connection(conn);
 }
