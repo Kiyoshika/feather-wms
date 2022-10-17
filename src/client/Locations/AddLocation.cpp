@@ -56,7 +56,7 @@ wms::menu::locations::AddLocation::AddLocation()
 	}
 
 	char is_active = 0;
-	while (is_active != 'y' && is_pickable != 'Y' && is_active != 'n' && is_active != 'N')
+	while (is_active != 'y' && is_active != 'Y' && is_active != 'n' && is_active != 'N')
 	{
 		std::cout << "\nIs location currently active? (y/n): ";
 		std::cin >> is_active;

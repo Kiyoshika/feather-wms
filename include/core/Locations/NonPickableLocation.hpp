@@ -5,31 +5,22 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "QueryManager.hpp"
+#include "BaseLocation.hpp"
 
 namespace wms
 {
 namespace locations
 {
-class NonPickableLocation : protected wms::internal::sql::QueryManager
+class NonPickableLocation : public wms::locations::BaseLocation
 {
 	public:
-
 	NonPickableLocation(
 		const std::string& warehouse,
 		const std::string& location_name,
 		const bool is_active) noexcept(false);
 
-	void commit_insert() noexcept(false);
+	void commit_insert() const noexcept(false) override;
 
-	std::string warehouse;
-	std::string location_name;
-	bool is_active;
-	bool is_pickable;
-
-	private:
-
-	bool check_location_exists() noexcept(true);
 }; // class NonPickableLocation
 }; // namespace locations
 }; // namespace wms

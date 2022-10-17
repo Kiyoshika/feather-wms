@@ -8,12 +8,12 @@ add_library(wmsutil Util.cpp)
 target_include_directories(wmsutil PUBLIC
 	${FeatherWMS_SOURCE_DIR}/include
     ${FeatherWMS_SOURCE_DIR}/include/core)
+target_link_libraries(wmsutil pqxx)
 
 add_library(wmslocation 
-    Locations/PickableLocation/PickableLocation.cpp
-    Locations/PickableLocation/PickableLocation_Internal.cpp
-	Locations/NonPickableLocation/NonPickableLocation.cpp
-	Locations/NonPickableLocation/NonPickableLocation_Internal.cpp
+	Locations/BaseLocation.cpp
+    Locations/PickableLocation.cpp
+	Locations/NonPickableLocation.cpp
 )
 target_include_directories(wmslocation PUBLIC 
 	${FeatherWMS_SOURCE_DIR}/include

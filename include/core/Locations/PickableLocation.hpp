@@ -5,16 +5,15 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "QueryManager.hpp"
+#include "BaseLocation.hpp"
 
 namespace wms
 {
 namespace locations 
 {
-class PickableLocation : protected wms::internal::sql::QueryManager
+class PickableLocation : public wms::locations::BaseLocation
 {
 	public:
-
 	// create a new location
 	PickableLocation(
 			const std::string& warehouse,
@@ -27,21 +26,15 @@ class PickableLocation : protected wms::internal::sql::QueryManager
 	std::string to_string() const noexcept(true);
 
 	// insert location into "locations" table within database
-	void commit_insert() noexcept(false);
+	void commit_insert() const noexcept(false) override;
 
-
-	std::string warehouse;
+	private:
 	uint16_t aisle;
 	uint16_t bay;
 	uint16_t level;
 	uint64_t picking_flow_int;
-	bool is_active;
-	bool is_pickable;
 
-	private:
-
-	bool check_location_exists() noexcept(true);
-}; // class Location
-}; // namespace entities
+}; // class PickableLocation
+}; // namespace locations 
 }; // namespace wms
 #endif

@@ -1,4 +1,5 @@
 #include "PickableLocation.hpp"
+#include "BaseLocation.hpp"
 #include "Util.hpp"
 #include <pqxx/pqxx>
 
@@ -24,11 +25,13 @@ wms::locations::PickableLocation::PickableLocation(
 	this->aisle = aisle;
 	this->bay = bay;
 	this->level = level;
+	this->location_name = this->to_string();
 	this->is_active = is_active;
 	this->picking_flow_int = 
 		this->level + 
 		(256 * this->bay) + 
 		(256 * 256 * this->aisle); 
+	this->is_pickable = true;
 }
 
 std::string wms::locations::PickableLocation::to_string() const noexcept(true)
@@ -41,7 +44,7 @@ std::string wms::locations::PickableLocation::to_string() const noexcept(true)
 	return location_string;
 }
 
-void wms::locations::PickableLocation::commit_insert() noexcept(false)
+void wms::locations::PickableLocation::commit_insert() const noexcept(false)
 {
 	// verify location doesn't exist by searching pick flow int which is a unique
 	// identifier for a location
@@ -53,21 +56,19 @@ void wms::locations::PickableLocation::commit_insert() noexcept(false)
 		throw std::runtime_error("ERR: Couldn't connect to PostgreSQL server.");
 
 	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/locations/insert_new_location.sql");
-	
-	wms::util::replace_substring(sqlfile_str, "{warehouse}", "'" + this->warehouse + "'");
-	wms::util::replace_substring(sqlfile_str, "{name}", "'" + this->to_string() + "'");
-	wms::util::replace_substring(sqlfile_str, "{aisle}", std::to_string(this->aisle));
-	wms::util::replace_substring(sqlfile_str, "{bay}", std::to_string(this->bay));
-	wms::util::replace_substring(sqlfile_str, "{level}", std::to_string(this->level));
-	wms::util::replace_substring(sqlfile_str, "{picking_flow_int}", std::to_string(this->picking_flow_int));
-	wms::util::replace_substring(sqlfile_str, "{is_pickable}", "true");
 	std::string is_active_str = this->is_active ? "true" : "false";
-	wms::util::replace_substring(sqlfile_str, "{is_active}", is_active_str);
-
-	conn->prepare("insert_location", sqlfile_str);
-	pqxx::work work(*conn);
-	pqxx::result r = work.exec_prepared("insert_location");
-	work.commit();
 	
+	wms::util::replace_substrings(sqlfile_str, {
+		{ "{warehouse}", this->warehouse },
+		{ "{name}", this->location_name },
+		{ "{aisle}", std::to_string(this->aisle) },
+		{ "{bay}", std::to_string(this->bay) },
+		{ "{level}", std::to_string(this->level) },
+		{ "{picking_flow_int}", std::to_string(this->picking_flow_int) },
+		{ "{is_pickable}", "true" },
+		{ "{is_active}", is_active_str }
+	});
+	
+	this->execute_query(conn, sqlfile_str);
 	this->close_connection(conn);
 }
