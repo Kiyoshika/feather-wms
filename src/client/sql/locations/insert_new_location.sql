@@ -8,8 +8,8 @@ insert into locations (
     is_pickable,
     is_active
 ) values (
-    {warehouse},
-    {name},
+    '{warehouse}',
+    '{name}',
     {aisle},
     {bay},
     {level},

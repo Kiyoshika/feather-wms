@@ -1,6 +1,7 @@
 #include "BaseMenu.hpp"
 #include "AdminMenu.hpp"
 #include "AddLocation.hpp"
+#include "EditLocation.hpp"
 
 wms::menu::AdminMenu::AdminMenu()
 {
@@ -11,7 +12,7 @@ wms::menu::AdminMenu::AdminMenu()
 		}},
 
 		{ 2, "Edit Location", [](){
-			std::cout << "Edit a location!\n";
+			wms::menu::locations::EditLocation edit;
 		}},
 
 		{ 3, "Remove Location", [](){

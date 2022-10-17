@@ -1,4 +1,5 @@
 #include "NonPickableLocation.hpp"
+#include "BaseLocation.hpp"
 #include "Util.hpp"
 #include <pqxx/pqxx>
 
@@ -22,7 +23,7 @@ wms::locations::NonPickableLocation::NonPickableLocation(
 	this->is_pickable = false;
 }
 
-void wms::locations::NonPickableLocation::commit_insert() noexcept(false)
+void wms::locations::NonPickableLocation::commit_insert() const noexcept(false)
 {
 	// verify location doesn't exist by searching location name
 	if (this->check_location_exists())
@@ -33,21 +34,19 @@ void wms::locations::NonPickableLocation::commit_insert() noexcept(false)
 		throw std::runtime_error("ERR: Couldn't connect to PostgreSQL server.");
 
 	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/locations/insert_new_location.sql");
-	
-	wms::util::replace_substring(sqlfile_str, "{warehouse}", "'" + this->warehouse + "'");
-	wms::util::replace_substring(sqlfile_str, "{name}", "'" + this->location_name + "'");
-	wms::util::replace_substring(sqlfile_str, "{aisle}", "NULL"); 
-	wms::util::replace_substring(sqlfile_str, "{bay}", "NULL"); 
-	wms::util::replace_substring(sqlfile_str, "{level}", "NULL"); 
-	wms::util::replace_substring(sqlfile_str, "{picking_flow_int}", "NULL"); 
-	wms::util::replace_substring(sqlfile_str, "{is_pickable}", "false"); 
 	std::string is_active_str = this->is_active ? "true" : "false";
-	wms::util::replace_substring(sqlfile_str, "{is_active}", is_active_str);
 
-	conn->prepare("insert_location", sqlfile_str);
-	pqxx::work work(*conn);
-	pqxx::result r = work.exec_prepared("insert_location");
-	work.commit();
+	wms::util::replace_substrings(sqlfile_str, {
+		{ "{warehouse}", this->warehouse },
+		{ "{name}", this->location_name },
+		{ "{aisle}", "NULL" },
+		{ "{bay}", "NULL" },
+		{ "{level}", "NULL" },
+		{ "{picking_flow_int}", "NULL" },
+		{ "{is_pickable}", "false" },
+		{ "{is_active}", is_active_str }
+	});
 
+	this->execute_query(conn, sqlfile_str);
 	this->close_connection(conn);
 }
