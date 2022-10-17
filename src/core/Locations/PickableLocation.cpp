@@ -69,6 +69,6 @@ void wms::locations::PickableLocation::commit_insert() const noexcept(false)
 		{ "{is_active}", is_active_str }
 	});
 	
-	this->execute_query(conn, sqlfile_str);
+	this->execute_query(conn, sqlfile_str, "insert_new_location_pickable");
 	this->close_connection(conn);
 }

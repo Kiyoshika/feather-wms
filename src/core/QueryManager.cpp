@@ -28,11 +28,12 @@ void wms::internal::sql::QueryManager::close_connection(pqxx::connection*& conn)
 
 pqxx::result wms::internal::sql::QueryManager::execute_query(
 	pqxx::connection*& conn, 
-	const std::string& query_string) const noexcept(true)
+	const std::string& query_string,
+	const std::string& query_name) const noexcept(true)
 {
-	conn->prepare("query", query_string);
+	conn->prepare(query_name, query_string);
 	pqxx::work work(*conn);
-	pqxx::result r = work.exec_prepared("query");
+	pqxx::result r = work.exec_prepared(query_name);
 	work.commit();
 
 	return r;

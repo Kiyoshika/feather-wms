@@ -25,6 +25,10 @@ namespace util
 		std::string& main_string,
 		const std::vector<std::pair<std::string, std::string>>& replace_list) noexcept(true);
 
+	bool is_valid_warehouse_name(const std::string& warehouse) noexcept(true);
+
+	bool is_valid_location_name(const std::string& location_name) noexcept(true);
+
 }; // namespace util
 }; // namespace wms
 #endif

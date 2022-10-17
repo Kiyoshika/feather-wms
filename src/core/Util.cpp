@@ -31,3 +31,26 @@ void wms::util::replace_substrings(
 }
 
 
+bool wms::util::is_valid_warehouse_name(const std::string& warehouse) noexcept(true)
+{
+	if (warehouse.length() < 4)
+		return false;
+
+	if (warehouse.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") != std::string::npos)
+		return false;
+
+	return true;
+
+}
+
+bool wms::util::is_valid_location_name(const std::string& location_name) noexcept(true)
+{
+	if (location_name.length() < 5)
+		return false;
+
+	if (location_name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_") != std::string::npos)
+		return false;
+
+	return true;
+
+}

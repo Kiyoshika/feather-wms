@@ -25,7 +25,7 @@ wms::locations::BaseLocation* wms::locations::BaseLocation::fetch_location(
 		{ "{name}", location_name }
 	});
 
-	pqxx::result r = query_manager.execute_query(conn, sqlfile_str);
+	pqxx::result r = query_manager.execute_query(conn, sqlfile_str, "fetch_location");
 	if (r.size() == 0)
 	{
 		delete conn;
@@ -70,7 +70,7 @@ void wms::locations::BaseLocation::commit_update_is_active(const bool is_active)
 		{ "{is_active}", is_active_str }
 	});
 
-	this->execute_query(conn, sqlfile_str);
+	this->execute_query(conn, sqlfile_str, "update_is_active");
 	this->close_connection(conn);
 }
 
@@ -86,7 +86,7 @@ bool wms::locations::BaseLocation::check_location_exists() const noexcept(false)
 		{ "{name}", this->location_name }
 	});
 	
-	pqxx::result res = this->execute_query(conn, sqlfile_str);
+	pqxx::result res = this->execute_query(conn, sqlfile_str, "check_location_exists");
 	
 	bool location_exists = res.size() > 0;
 

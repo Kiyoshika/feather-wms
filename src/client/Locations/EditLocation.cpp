@@ -1,6 +1,7 @@
 #include "EditLocation.hpp"
 #include "PickableLocation.hpp"
 #include "NonPickableLocation.hpp"
+#include "Util.hpp"
 
 wms::menu::locations::EditLocation::EditLocation() noexcept(false)
 {
@@ -9,6 +10,9 @@ wms::menu::locations::EditLocation::EditLocation() noexcept(false)
 	std::string location_name;
 	std::cout << "Enter location name to search: ";
 	std::cin >> location_name;
+
+	if (!wms::util::is_valid_location_name(location_name))
+		throw std::runtime_error("ERR: Invalid location name.");
 
 	wms::locations::BaseLocation* location = wms::locations::BaseLocation::fetch_location(
 		"TEST1",
