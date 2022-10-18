@@ -10,12 +10,16 @@ wms::menu::locations::EditLocation::EditLocation() noexcept(false)
 	std::string warehouse;
 	std::cout << "Enter warehouse name (must be exactly 5 characters): ";
 	std::cin >> warehouse;
+	if (warehouse == "F1")
+		return;
 	if (!wms::util::is_valid_warehouse_name(warehouse))
 		throw std::runtime_error("ERR: Invalid warehouse name.");
 
 	std::string location_name;
 	std::cout << "Enter location name to search: ";
 	std::cin >> location_name;
+	if (location_name == "F1")
+		return;
 
 	if (!wms::util::is_valid_location_name(location_name))
 		throw std::runtime_error("ERR: Invalid location name.");
@@ -25,15 +29,17 @@ wms::menu::locations::EditLocation::EditLocation() noexcept(false)
 		location_name);
 
 	std::string is_active_str = location->check_is_active() ? "y" : "n";
-	char set_active = 0;
-	while (set_active != 'y' && set_active != 'Y' && set_active != 'n' && set_active != 'N')
+	std::string set_active = "";
+	while (set_active != "y" && set_active != "Y" && set_active != "n" && set_active != "N")
 	{
 		std::cout << "\nSet location active (y/n)? (Currently: " + is_active_str + "): ";
 		std::cin >> set_active;
+		if (set_active == "F1")
+			return;
 	}
 
 	bool set_active_b = false;
-	if (set_active == 'y' || set_active == 'Y')
+	if (set_active == "y" || set_active == "Y")
 		set_active_b = true;
 
 	try
