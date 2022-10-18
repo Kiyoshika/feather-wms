@@ -6,6 +6,12 @@ wms::menu::locations::RemoveLocation::RemoveLocation() noexcept(false)
 {
 	this->clear_screen();
 
+	std::string warehouse;
+	std::cout << "Enter warehouse name (must be exactly 5 characters): ";
+	std::cin >> warehouse;
+	if (!wms::util::is_valid_warehouse_name(warehouse))
+		throw std::runtime_error("ERR: Invalid warehouse name.");
+
 	std::string location_name;
 	std::cout << "Enter location name to search: ";
 	std::cin >> location_name;
@@ -19,7 +25,7 @@ wms::menu::locations::RemoveLocation::RemoveLocation() noexcept(false)
 		throw std::runtime_error("ERR: Couldn't connect to PostgreSQL server.");
 	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/locations/check_location_exists.sql");
 	wms::util::replace_substrings(sqlfile_str, {
-		{ "{warehouse}", "TEST1" },
+		{ "{warehouse}", warehouse },
 		{ "{name}", location_name }
 	});
 	pqxx::result res = query.execute_query(conn, sqlfile_str, "check_location_exists");
@@ -31,7 +37,7 @@ wms::menu::locations::RemoveLocation::RemoveLocation() noexcept(false)
 	}
 	sqlfile_str = wms::util::read_sql_from_file("./sql/locations/delete_location.sql");
 	wms::util::replace_substrings(sqlfile_str, {
-		{ "{warehouse}" , "TEST1" },
+		{ "{warehouse}" , warehouse },
 		{ "{name}", location_name }
 	});
 	query.execute_query(conn, sqlfile_str, "delete_location");

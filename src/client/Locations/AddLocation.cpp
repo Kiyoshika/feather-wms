@@ -1,6 +1,7 @@
 #include "AddLocation.hpp"
 #include "PickableLocation.hpp"
 #include "NonPickableLocation.hpp"
+#include "Util.hpp"
 
 bool _is_valid_location_name(
 	const std::string& location_name,
@@ -44,9 +45,15 @@ bool _is_valid_location_name(
 	return false;
 }
 
-wms::menu::locations::AddLocation::AddLocation()
+wms::menu::locations::AddLocation::AddLocation() noexcept(false)
 {
 	this->clear_screen();
+	
+	std::string warehouse;
+	std::cout << "Enter warehouse name (must be exactly 5 characters): ";
+	std::cin >> warehouse;
+	if (!wms::util::is_valid_warehouse_name(warehouse))
+		throw std::runtime_error("ERR: Invalid warehouse name.");
 
 	char is_pickable = 0;
 	while (is_pickable != 'y' && is_pickable != 'Y' && is_pickable != 'n' && is_pickable != 'N')
@@ -90,7 +97,7 @@ wms::menu::locations::AddLocation::AddLocation()
 	if (is_pickable == 'y' || is_pickable == 'Y')
 	{
 		wms::locations::PickableLocation loc(
-			"TEST1", 
+			warehouse,
 			location_tokens[0],
 			location_tokens[1],
 			location_tokens[2],
@@ -101,7 +108,7 @@ wms::menu::locations::AddLocation::AddLocation()
 	else // non-pickable
 	{
 		wms::locations::NonPickableLocation loc(
-			"TEST1",
+			warehouse,
 			location_name,
 			is_active_b);
 
