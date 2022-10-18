@@ -9,12 +9,16 @@ wms::menu::locations::RemoveLocation::RemoveLocation() noexcept(false)
 	std::string warehouse;
 	std::cout << "Enter warehouse name (must be exactly 5 characters): ";
 	std::cin >> warehouse;
+	if (warehouse == "F1")
+		return;
 	if (!wms::util::is_valid_warehouse_name(warehouse))
 		throw std::runtime_error("ERR: Invalid warehouse name.");
 
 	std::string location_name;
 	std::cout << "Enter location name to search: ";
 	std::cin >> location_name;
+	if (location_name == "F1")
+		return;
 
 	if (!wms::util::is_valid_location_name(location_name))
 		throw std::runtime_error("ERR: Invalid location name.");

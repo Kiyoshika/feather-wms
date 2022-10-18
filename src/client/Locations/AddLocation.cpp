@@ -5,13 +5,13 @@
 
 bool _is_valid_location_name(
 	const std::string& location_name,
-	char is_pickable,
+	std::string is_pickable,
 	std::string& err_msg,
 	std::vector<uint16_t>& location_tokens)
 {
 	location_tokens.clear();
 
-	if (is_pickable == 'y' || is_pickable == 'Y')
+	if (is_pickable == "y" || is_pickable == "Y")
 	{
 		std::vector<std::string> location_name_tokens = {};
 
@@ -52,25 +52,33 @@ wms::menu::locations::AddLocation::AddLocation() noexcept(false)
 	std::string warehouse;
 	std::cout << "Enter warehouse name (must be exactly 5 characters): ";
 	std::cin >> warehouse;
+
+	if (warehouse == "F1")
+		return;
+
 	if (!wms::util::is_valid_warehouse_name(warehouse))
 		throw std::runtime_error("ERR: Invalid warehouse name.");
 
-	char is_pickable = 0;
-	while (is_pickable != 'y' && is_pickable != 'Y' && is_pickable != 'n' && is_pickable != 'N')
+	std::string is_pickable = "";
+	while (is_pickable != "y" && is_pickable != "Y" && is_pickable != "n" && is_pickable != "N")
 	{
 		std::cout << "\nIs location pickable? (y/n): ";
 		std::cin >> is_pickable;
+		if (is_pickable == "F1")
+			return;
 	}
 
-	char is_active = 0;
-	while (is_active != 'y' && is_active != 'Y' && is_active != 'n' && is_active != 'N')
+	std::string is_active = "";
+	while (is_active != "y" && is_active != "Y" && is_active != "n" && is_active != "N")
 	{
 		std::cout << "\nIs location currently active? (y/n): ";
 		std::cin >> is_active;
+		if (is_active == "F1")
+			return;
 	}
 
 	std::string location_msg = "";
-	if (is_pickable == 'y' || is_pickable == 'Y')
+	if (is_pickable == "y" || is_pickable == "Y")
 		location_msg = "\nLocation Name (Format: X-X-X, X ranges from 1-255): ";
 	else
 		location_msg = "\nLocation Name (Must be at least 5 characters): ";
@@ -82,19 +90,21 @@ wms::menu::locations::AddLocation::AddLocation() noexcept(false)
 	{
 		std::cout << location_msg;
 		std::cin >> location_name;
+		if (location_name == "F1")
+			return;
 		if (_is_valid_location_name(location_name, is_pickable, err_msg, location_tokens))
 			break;
 		std::cout << err_msg;
 	}
 
 	bool is_active_b;
-	if (is_active == 'y' || is_active == 'Y')
+	if (is_active == "y" || is_active == "Y")
 		is_active_b = true;
 	else
 		is_active_b = false;
 
 	// add location to database
-	if (is_pickable == 'y' || is_pickable == 'Y')
+	if (is_pickable == "y" || is_pickable == "Y")
 	{
 		wms::locations::PickableLocation loc(
 			warehouse,
