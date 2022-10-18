@@ -7,6 +7,12 @@ wms::menu::locations::EditLocation::EditLocation() noexcept(false)
 {
 	this->clear_screen();
 
+	std::string warehouse;
+	std::cout << "Enter warehouse name (must be exactly 5 characters): ";
+	std::cin >> warehouse;
+	if (!wms::util::is_valid_warehouse_name(warehouse))
+		throw std::runtime_error("ERR: Invalid warehouse name.");
+
 	std::string location_name;
 	std::cout << "Enter location name to search: ";
 	std::cin >> location_name;
@@ -15,7 +21,7 @@ wms::menu::locations::EditLocation::EditLocation() noexcept(false)
 		throw std::runtime_error("ERR: Invalid location name.");
 
 	wms::locations::BaseLocation* location = wms::locations::BaseLocation::fetch_location(
-		"TEST1",
+		warehouse,
 		location_name);
 
 	std::string is_active_str = location->check_is_active() ? "y" : "n";

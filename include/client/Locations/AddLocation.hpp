@@ -16,7 +16,7 @@ namespace locations
 class AddLocation : protected wms::menu::BaseMenu
 {
 	public:
-	AddLocation();
+	AddLocation() noexcept(false);
 }; // class AddLocation
 }; // namespace locations
 }; // namespace menu
