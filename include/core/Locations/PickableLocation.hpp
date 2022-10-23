@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include "BaseLocation.hpp"
 
 namespace wms

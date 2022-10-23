@@ -3,6 +3,8 @@
 
 #include "QueryManager.hpp"
 #include <string>
+#include <pqxx/pqxx>
+#include <memory>
 
 namespace wms
 {
@@ -11,7 +13,7 @@ namespace locations
 class BaseLocation : public wms::internal::sql::QueryManager
 {
 	public:
-	static BaseLocation* fetch_location(
+	static std::unique_ptr<BaseLocation> fetch_location(
 		const std::string& warehouse,
 		const std::string& location_name);
 	virtual void commit_insert() const noexcept(false) = 0;

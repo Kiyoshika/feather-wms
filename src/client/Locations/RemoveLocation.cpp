@@ -24,7 +24,7 @@ wms::menu::locations::RemoveLocation::RemoveLocation() noexcept(false)
 		throw std::runtime_error("ERR: Invalid location name.");
 
 	wms::internal::sql::QueryManager query;
-	pqxx::connection* conn = query.open_connection();
+	std::unique_ptr<pqxx::connection> conn = query.open_connection();
 	if (conn == nullptr)
 		throw std::runtime_error("ERR: Couldn't connect to PostgreSQL server.");
 	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/locations/check_location_exists.sql");
@@ -34,11 +34,7 @@ wms::menu::locations::RemoveLocation::RemoveLocation() noexcept(false)
 	});
 	pqxx::result res = query.execute_query(conn, sqlfile_str, "check_location_exists");
 	if (res.size() == 0)
-	{
-		delete conn;
-		conn = nullptr;
 		throw std::runtime_error("ERR: Location doesn't exist.");
-	}
 	sqlfile_str = wms::util::read_sql_from_file("./sql/locations/delete_location.sql");
 	wms::util::replace_substrings(sqlfile_str, {
 		{ "{warehouse}" , warehouse },
@@ -46,5 +42,5 @@ wms::menu::locations::RemoveLocation::RemoveLocation() noexcept(false)
 	});
 	query.execute_query(conn, sqlfile_str, "delete_location");
 	
-	query.close_connection(conn);
+	query.close_connection(std::move(conn));
 }

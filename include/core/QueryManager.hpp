@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <string>
+#include <memory>
 
 namespace wms
 {
@@ -15,10 +16,10 @@ namespace sql
 class QueryManager
 {
     public:
-        pqxx::connection* open_connection() const noexcept(true);
-        void close_connection(pqxx::connection*& conn) const noexcept(true);
+        std::unique_ptr<pqxx::connection> open_connection() const noexcept(true);
+        void close_connection(std::unique_ptr<pqxx::connection> conn) const noexcept(true);
 		pqxx::result execute_query(
-			pqxx::connection*& conn,
+			const std::unique_ptr<pqxx::connection>& conn,
 			const std::string& query_string,
 			const std::string& query_name) const noexcept(true);
 	private:
