@@ -24,6 +24,7 @@ wms::menu::locations::EditLocation::EditLocation() noexcept(false)
 	if (!wms::util::is_valid_location_name(location_name))
 		throw std::runtime_error("ERR: Invalid location name.");
 
+	// this can throw an exception which will propogate to the LocationMenu
 	wms::locations::BaseLocation* location = wms::locations::BaseLocation::fetch_location(
 		warehouse,
 		location_name);

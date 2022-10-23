@@ -8,6 +8,7 @@ configure_file(sql/locations/delete_location.sql sql/locations/delete_location.s
 add_library(wmsmenu 
 	BaseMenu.cpp
 	AdminMenu.cpp
+	Locations/LocationMenu.cpp
 	Locations/AddLocation.cpp
 	Locations/EditLocation.cpp
 	Locations/RemoveLocation.cpp
