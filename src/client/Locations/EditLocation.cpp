@@ -25,7 +25,7 @@ wms::menu::locations::EditLocation::EditLocation() noexcept(false)
 		throw std::runtime_error("ERR: Invalid location name.");
 
 	// this can throw an exception which will propogate to the LocationMenu
-	wms::locations::BaseLocation* location = wms::locations::BaseLocation::fetch_location(
+	std::unique_ptr<wms::locations::BaseLocation> location = wms::locations::BaseLocation::fetch_location(
 		warehouse,
 		location_name);
 
@@ -43,16 +43,6 @@ wms::menu::locations::EditLocation::EditLocation() noexcept(false)
 	if (set_active == "y" || set_active == "Y")
 		set_active_b = true;
 
-	try
-	{
-		location->commit_update_is_active(set_active_b);
-		delete location;
-		location = nullptr;
-	}
-	catch (const std::exception& e)
-	{
-		delete location;
-		location = nullptr;	
-		std::cerr << e.what() << std::endl;
-	}
+	// this can throw an exception which will propogate to the LocationMenu
+	location->commit_update_is_active(set_active_b);
 }

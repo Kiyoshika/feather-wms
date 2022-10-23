@@ -51,7 +51,7 @@ void wms::locations::PickableLocation::commit_insert() const noexcept(false)
 	if (this->check_location_exists())
 		throw std::runtime_error("ERR: Location already exists.");
 	
-	pqxx::connection* conn = this->open_connection();
+	std::unique_ptr<pqxx::connection> conn = this->open_connection();
 	if (conn == nullptr)
 		throw std::runtime_error("ERR: Couldn't connect to PostgreSQL server.");
 
@@ -70,5 +70,5 @@ void wms::locations::PickableLocation::commit_insert() const noexcept(false)
 	});
 	
 	this->execute_query(conn, sqlfile_str, "insert_new_location_pickable");
-	this->close_connection(conn);
+	this->close_connection(std::move(conn));
 }

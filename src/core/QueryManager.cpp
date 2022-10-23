@@ -1,33 +1,28 @@
 #include "QueryManager.hpp"
 
-pqxx::connection* wms::internal::sql::QueryManager::open_connection() const noexcept(true)
+std::unique_ptr<pqxx::connection> wms::internal::sql::QueryManager::open_connection() const noexcept(true)
 {
-    pqxx::connection* conn = nullptr;
+    std::unique_ptr<pqxx::connection> conn = nullptr;
     try
     {
-        conn = new pqxx::connection(this->connection_string);
+		conn = std::make_unique<pqxx::connection>(this->connection_string);
     }
     catch (const std::exception& e)
     {
-        //delete conn; // should be no-op, but doing it anyways
 		std::cerr << e.what() << std::endl;
     }
 
     return conn;
 }
 
-void wms::internal::sql::QueryManager::close_connection(pqxx::connection*& conn) const noexcept(true)
+void wms::internal::sql::QueryManager::close_connection(std::unique_ptr<pqxx::connection> conn) const noexcept(true)
 {
 	if (conn)
-	{
 		conn->close();
-		delete conn;
-		conn = nullptr;
-	}
 }
 
 pqxx::result wms::internal::sql::QueryManager::execute_query(
-	pqxx::connection*& conn, 
+	const std::unique_ptr<pqxx::connection>& conn, 
 	const std::string& query_string,
 	const std::string& query_name) const noexcept(true)
 {

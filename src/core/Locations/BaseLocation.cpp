@@ -2,19 +2,17 @@
 #include "PickableLocation.hpp"
 #include "NonPickableLocation.hpp"
 #include "Util.hpp"
-#include <pqxx/pqxx>
-#include <memory>
 
-wms::locations::BaseLocation* wms::locations::BaseLocation::fetch_location(
+std::unique_ptr<wms::locations::BaseLocation> wms::locations::BaseLocation::fetch_location(
 	const std::string& warehouse,
 	const std::string& location_name) noexcept(false)
 {
 	wms::internal::sql::QueryManager query_manager;
 
 	// used for actually returning
-	wms::locations::BaseLocation* location = nullptr;
+	std::unique_ptr<wms::locations::BaseLocation> location = nullptr;
 
-	pqxx::connection* conn = query_manager.open_connection();
+	std::unique_ptr<pqxx::connection> conn = query_manager.open_connection();
 	if (conn == nullptr)
 		throw std::runtime_error("ERR: Couldn't connect to PostgreSQL server..");
 
@@ -27,11 +25,8 @@ wms::locations::BaseLocation* wms::locations::BaseLocation::fetch_location(
 
 	pqxx::result r = query_manager.execute_query(conn, sqlfile_str, "fetch_location");
 	if (r.size() == 0)
-	{
-		delete conn;
-		conn = nullptr;
 		throw std::runtime_error("ERR: Locaiton doesn't exist.");
-	}
+
 	pqxx::row _row = r[0]; // should only be one result, so we grab it
 
 	bool is_pickable = _row[5].as<bool>();
@@ -41,14 +36,14 @@ wms::locations::BaseLocation* wms::locations::BaseLocation::fetch_location(
 		uint16_t aisle = _row[2].as<uint16_t>();
 		uint16_t bay = _row[3].as<uint16_t>();
 		uint16_t level = _row[4].as<uint16_t>();
-		location = new wms::locations::PickableLocation(warehouse, aisle, bay, level, is_active);
+		location = std::make_unique<wms::locations::PickableLocation>(warehouse, aisle, bay, level, is_active);
 	}
 	else
 	{
-		location = new wms::locations::NonPickableLocation(warehouse, location_name, is_active);
+		location = std::make_unique<wms::locations::NonPickableLocation>(warehouse, location_name, is_active);
 	}
 
-	query_manager.close_connection(conn);
+	query_manager.close_connection(std::move(conn));
 
 	return location;
 }
@@ -58,7 +53,7 @@ void wms::locations::BaseLocation::commit_update_is_active(const bool is_active)
 	if (!this->check_location_exists())
 		throw std::runtime_error("ERR: Location doesn't exist.");
 
-	pqxx::connection* conn = this->open_connection();
+	std::unique_ptr<pqxx::connection> conn = this->open_connection();
 	if (conn == nullptr)
 		throw std::runtime_error("ERR: Couldn't connect to PostgreSQL server.");
 
@@ -71,12 +66,12 @@ void wms::locations::BaseLocation::commit_update_is_active(const bool is_active)
 	});
 
 	this->execute_query(conn, sqlfile_str, "update_is_active");
-	this->close_connection(conn);
+	this->close_connection(std::move(conn));
 }
 
 bool wms::locations::BaseLocation::check_location_exists() const noexcept(false)
 {
-	pqxx::connection* conn = this->open_connection();
+	std::unique_ptr<pqxx::connection> conn = this->open_connection();
 	if (conn == nullptr)
 		throw std::runtime_error("ERR: Couldn't connect to PostgreSQL server.");
 
@@ -90,7 +85,7 @@ bool wms::locations::BaseLocation::check_location_exists() const noexcept(false)
 	
 	bool location_exists = res.size() > 0;
 
-	this->close_connection(conn);
+	this->close_connection(std::move(conn));
 
 	return location_exists;
 }
