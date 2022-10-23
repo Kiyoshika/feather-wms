@@ -1,5 +1,5 @@
 #ifndef ADDLOCATION_HPP
-#define ADD_LOCATION_HPP
+#define ADDLOCATION_HPP
 
 #include <iostream>
 #include <ctype.h>

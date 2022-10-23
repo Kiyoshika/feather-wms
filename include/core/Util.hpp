@@ -28,6 +28,16 @@ namespace util
 	bool is_valid_warehouse_name(const std::string& warehouse) noexcept(true);
 
 	bool is_valid_location_name(const std::string& location_name) noexcept(true);
+	
+	bool is_non_negative_double(const std::string& numeric_str) noexcept(true);	
+
+	bool is_valid_sku(const std::string& sku) noexcept(true);
+
+	bool is_valid_upc(const std::string& sku) noexcept(true);
+
+	bool is_valid_product_name(const std::string& product_name) noexcept(true);
+
+	bool is_valid_product_description(const std::string& product_description) noexcept(true);
 
 }; // namespace util
 }; // namespace wms

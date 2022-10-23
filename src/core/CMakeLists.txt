@@ -22,3 +22,12 @@ target_include_directories(wmslocation PUBLIC
 )
 target_link_libraries(wmslocation pqxx wmsutil wmsquerymanager)
 
+add_library(wmsproduct
+	Product.cpp
+)
+target_include_directories(wmsproduct PUBLIC
+	${FeatherWMS_SOURCE_DIR}/include
+	${FeatherWMS_SOURCE_DIR}/include/core
+)
+target_link_libraries(wmsproduct pqxx wmsutil wmsquerymanager)
+

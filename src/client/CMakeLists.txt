@@ -8,10 +8,12 @@ configure_file(sql/locations/delete_location.sql sql/locations/delete_location.s
 add_library(wmsmenu 
 	BaseMenu.cpp
 	AdminMenu.cpp
+	ProductMenu.cpp
 	Locations/LocationMenu.cpp
 	Locations/AddLocation.cpp
 	Locations/EditLocation.cpp
 	Locations/RemoveLocation.cpp
+	Products/AddProduct.cpp
 )
 
 target_include_directories(wmsmenu PUBLIC 
@@ -19,8 +21,9 @@ target_include_directories(wmsmenu PUBLIC
 	${FeatherWMS_SOURCE_DIR}/include/core
 	${FeatherWMS_SOURCE_DIR}/include/client
 	${FeatherWMS_SOURCE_DIR}/include/client/Locations
+	${FeatherWMS_SOURCE_DIR}/include/client/Products
 )
-target_link_libraries(wmsmenu wmslocation)
+target_link_libraries(wmsmenu wmslocation wmsproduct)
 
 add_executable(wmsclient wmsclient.cpp)
 target_link_libraries(wmsclient wmsmenu)

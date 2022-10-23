@@ -54,3 +54,39 @@ bool wms::util::is_valid_location_name(const std::string& location_name) noexcep
 	return true;
 
 }
+
+bool wms::util::is_non_negative_double(const std::string& input) noexcept(true)
+{
+	try
+	{
+		double value = std::stod(input);
+		if (value >= 0.0)
+			return true;
+	}
+	catch (const std::exception& e)
+	{
+		return false;
+	}
+
+	return false;
+}
+
+bool wms::util::is_valid_sku(const std::string& sku) noexcept(true)
+{
+	return sku.length() <= 30 && sku.length() > 0;
+}
+
+bool wms::util::is_valid_upc(const std::string& upc) noexcept(true)
+{
+	return upc.length() <= 30 && upc.length() > 0;
+}
+
+bool wms::util::is_valid_product_name(const std::string& product_name) noexcept(true)
+{
+	return product_name.length() <= 50 && product_name.length() > 0;
+}
+
+bool wms::util::is_valid_product_description(const std::string& product_description) noexcept(true)
+{
+	return product_description.length() <= 300 && product_description.length() > 0;
+}
