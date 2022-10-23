@@ -20,7 +20,6 @@ int main()
 		{
 			err_msg = e.what();
 		}
-
 	}
 
 	return 0;

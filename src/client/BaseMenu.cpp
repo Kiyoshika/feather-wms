@@ -1,4 +1,5 @@
 #include "BaseMenu.hpp"
+#include <stdexcept>
 
 wms::menu::BaseMenu::BaseMenu()
 {
@@ -54,12 +55,22 @@ void wms::menu::BaseMenu::listen_for_input() const
 	// keep listening for input until user provides a valid option
 	while (true)
 	{
-		uint16_t user_input;
+		std::string user_input;
 		std::cin >> user_input;
-		for (const auto& [idx, option, callback] : this->options)
-			if (user_input == idx)
-				return callback();
-		this->display("ERR: Invalid Input"); // refresh screen
+
+		if (user_input == "F1")
+			return;
+
+		try
+		{
+			for (const auto& [idx, option, callback] : this->options)
+				if (std::stol(user_input) == idx)
+					return callback();
+		}
+		catch (const std::exception& e)
+		{
+			this->display(e.what()); // refresh screen
+		}
 	}
 }
 
