@@ -9,16 +9,18 @@ configure_file(sql/locations/delete_location.sql sql/locations/delete_location.s
 # PRODUCT QUERIES
 configure_file(sql/products/check_product_exists.sql sql/products/check_product_exists.sql COPYONLY)
 configure_file(sql/products/insert_new_product.sql sql/products/insert_new_product.sql COPYONLY)
+configure_file(sql/products/remove_product.sql sql/products/remove_product.sql COPYONLY)
 
 add_library(wmsmenu 
-	BaseMenu.cpp
-	AdminMenu.cpp
-	ProductMenu.cpp
+	Menus/BaseMenu.cpp
+	Menus/AdminMenu.cpp
+	Menus/ProductMenu.cpp
 	Locations/LocationMenu.cpp
 	Locations/AddLocation.cpp
 	Locations/EditLocation.cpp
 	Locations/RemoveLocation.cpp
 	Products/AddProduct.cpp
+	Products/RemoveProduct.cpp
 )
 
 target_include_directories(wmsmenu PUBLIC 

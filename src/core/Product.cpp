@@ -21,8 +21,6 @@ wms::products::Product::Product(
 {
 }
 
-// TODO: implement getters
-
 bool wms::products::Product::check_product_exists() const noexcept(false)
 {
 	wms::internal::sql::QueryManager query;
@@ -71,5 +69,90 @@ void wms::products::Product::commit_insert() const noexcept(false)
 		{ "{is_active}", _is_active }
 	});
 	query.execute_query(conn, sqlfile_str, "insert_new_product");
+	query.close_connection(std::move(conn));
+}
+
+std::unique_ptr<wms::products::Product> wms::products::Product::fetch_product(const std::string& sku) noexcept(false)
+{
+	if (!wms::util::is_valid_sku(sku))
+		throw std::runtime_error("ERR: Invalid SKU format.");
+
+	wms::internal::sql::QueryManager query;
+	std::unique_ptr<pqxx::connection> conn = query.open_connection();
+
+	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/products/fetch_product.sql");
+
+	wms::util::replace_substrings(sqlfile_str, {
+		{ "{sku}", sku }
+	});
+
+	pqxx::result r = query.execute_query(conn, sqlfile_str, "fetch_product");
+
+	if (r.size() == 0)
+		throw std::runtime_error("ERR: Product doesn't exist.");
+	
+	pqxx::row _row = r[0]; // should only be one result, so we grab it
+
+	std::unique_ptr<wms::products::Product> product = std::make_unique<wms::products::Product>(
+		_row[0].as<std::string>(), 	// sku
+		_row[1].as<std::string>(), 	// upc
+		_row[2].as<std::string>(), 	// name
+		_row[3].as<std::string>(), 	// description
+		_row[4].as<double>(), 		// item cost
+		_row[5].as<double>(),		// listing price
+		_row[6].as<double>(),		// length
+		_row[7].as<double>(),		// width
+		_row[8].as<double>(),		// height
+		_row[9].as<double>(),		// weight
+		_row[10].as<bool>()			// is active
+	);
+	
+	query.close_connection(std::move(conn));
+
+	return product;
+}
+
+void wms::products::Product::commit_remove() const noexcept(false)
+{
+	if (!this->check_product_exists())
+		throw std::runtime_error("ERR: Product doesn't exist.");
+
+	wms::internal::sql::QueryManager query;
+	std::unique_ptr<pqxx::connection> conn = query.open_connection();
+
+	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/products/remove_product.sql");
+	wms::util::replace_substrings(sqlfile_str, {
+		{ "{sku}", this->sku }
+	});
+
+	query.execute_query(conn, sqlfile_str, "remove_product");
+
+	query.close_connection(std::move(conn));
+}
+
+void wms::products::Product::commit_remove(const std::string& sku) noexcept(false)
+{
+	if (!wms::util::is_valid_sku(sku))
+		throw std::runtime_error("ERR: Invalid SKU format.");
+
+	wms::internal::sql::QueryManager query;
+	std::unique_ptr<pqxx::connection> conn = query.open_connection();
+
+	std::string sqlfile_str = wms::util::read_sql_from_file("./sql/products/check_product_exists.sql");
+	wms::util::replace_substrings(sqlfile_str, {
+		{ "{sku}", sku }
+	});
+
+	pqxx::result r = query.execute_query(conn, sqlfile_str, "check_product_exists");
+	if (r.size() == 0)
+		throw std::runtime_error("ERR: Product doesn't exist.");
+
+	sqlfile_str = wms::util::read_sql_from_file("./sql/products/remove_product.sql");
+	wms::util::replace_substrings(sqlfile_str, {
+		{ "{sku}", sku }
+	});
+
+	query.execute_query(conn, sqlfile_str, "remove_product");
+
 	query.close_connection(std::move(conn));
 }

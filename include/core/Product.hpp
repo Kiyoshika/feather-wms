@@ -25,29 +25,13 @@ class Product
 		const double weight,
 		const bool is_active) noexcept(true);
 
-	std::string get_sku() const noexcept(true);
-
-	std::string get_upc() const noexcept(true);
-
-	std::string get_name() const noexcept(true);
-
-	std::string get_description() const noexcept(true);
-
-	double get_item_cost() const noexcept(true);
-
-	double get_listing_price() const noexcept(true);
-
-	double get_length() const noexcept(true);
-
-	double get_width() const noexcept(true);
-
-	double get_height() const noexcept(true);
-
-	double get_weight() const noexcept(true);
-
-	bool check_is_active() const noexcept(true);
+	static std::unique_ptr<Product> fetch_product(const std::string& sku) noexcept(false);
 
 	void commit_insert() const noexcept(false);
+
+	void commit_remove() const noexcept(false);
+
+	static void commit_remove(const std::string& sku) noexcept(false);
 
 	private:
 	std::string sku;

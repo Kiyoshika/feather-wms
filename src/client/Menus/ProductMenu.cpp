@@ -17,7 +17,7 @@ wms::menu::ProductMenu::ProductMenu()
 		}},
 
 		{ 3, "Remove Product", [](){
-			// wms::menu::products::RemoveProduct remove;
+			 wms::menu::products::RemoveProduct remove;
 		}}
 	});
 }
