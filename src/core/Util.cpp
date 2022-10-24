@@ -73,20 +73,47 @@ bool wms::util::is_non_negative_double(const std::string& input) noexcept(true)
 
 bool wms::util::is_valid_sku(const std::string& sku) noexcept(true)
 {
-	return sku.length() <= 30 && sku.length() > 0;
+	if (sku.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") != std::string::npos)
+		return false;
+
+	if (!(sku.length() <= 30 && sku.length() > 0))
+		return false;
+
+	return true;
+		
 }
 
 bool wms::util::is_valid_upc(const std::string& upc) noexcept(true)
 {
-	return upc.length() <= 30 && upc.length() > 0;
+	if (upc.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") != std::string::npos)
+		return false;
+
+	if (!(upc.length() <= 30 && upc.length() > 0))
+		return false;
+
+	return true;
 }
 
 bool wms::util::is_valid_product_name(const std::string& product_name) noexcept(true)
 {
-	return product_name.length() <= 50 && product_name.length() > 0;
+	// yes, the space in the beginning is necessary
+	if (product_name.find_first_not_of(" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos)
+		return false;
+
+	if (!(product_name.length() <= 50 && product_name.length() > 0))
+		return false;
+
+	return true;
 }
 
 bool wms::util::is_valid_product_description(const std::string& product_description) noexcept(true)
 {
-	return product_description.length() <= 300 && product_description.length() > 0;
+	// yes, the space in the beginning is necessary
+	if (product_description.find_first_not_of(" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos)
+		return false;
+
+	if (!(product_description.length() <= 300 && product_description.length() > 0))
+		return false;
+
+	return true;
 }

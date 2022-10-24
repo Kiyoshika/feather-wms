@@ -62,6 +62,8 @@ class Product
 	double weight;
 	bool is_active;
 
+	bool check_product_exists() const noexcept(false);
+
 }; // class Product
 }; // namespace products
 }; // namespace wms
